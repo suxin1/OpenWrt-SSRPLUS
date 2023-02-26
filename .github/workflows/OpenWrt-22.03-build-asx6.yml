@@ -9,7 +9,7 @@
 
 #sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
 
-name: Build IPK
+name: OpenWrt-22.03-build-asx6
 
 on:
   repository_dispatch:
