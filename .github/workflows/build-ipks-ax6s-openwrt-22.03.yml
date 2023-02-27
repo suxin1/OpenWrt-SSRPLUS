@@ -9,7 +9,7 @@
 
 #sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
 
-name: OpenWrt-22.03-build-asx6
+name: Build IPK ax6s
 
 on:
   repository_dispatch:
@@ -21,8 +21,7 @@ on:
         default: 'false'
 
 env:
-  #  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: openwrt-22.03
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: ax6s-mediatek.config
@@ -166,9 +165,9 @@ jobs:
           [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
           [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
           echo "::set-output name=status::success"
-          find openwrt/bin/packages/x86_64 -name "*.ipk" | xargs tar czvf ${{ env.FIRMWARE }}/x86-64-IPK.tar.gz
+          find openwrt/bin/packages/ -name "*.ipk" | xargs tar czvf ${{ env.FIRMWARE }}/ipks.tar.gz
           echo "下载后务必确认SHA256是否正确！">> release.txt
-          echo "  x86-64-IPK.tar.gz SHA256: $(sha256sum ${{ env.FIRMWARE }}/x86-64-IPK.tar.gz | grep -oE "\w{64}")" >> release.txt
+          echo "  ipks.tar.gz SHA256: $(sha256sum ${{ env.FIRMWARE }}/ipks.tar.gz | grep -oE "\w{64}")" >> release.txt
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
         if: steps.tag.outputs.status == 'success' && !cancelled()
@@ -177,7 +176,7 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           body_path: release.txt
-          files: ${{ env.FIRMWARE }}/x86-64-IPK.tar.gz
+          files: ${{ env.FIRMWARE }}/ipks.tar.gz
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
